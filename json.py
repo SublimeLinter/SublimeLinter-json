@@ -16,7 +16,7 @@ from SublimeLinter.lint import Linter
 class JSON(Linter):
     language = 'json'
     cmd = None
-    regex = r'^(?P<error>.+):\s*line (?P<line>\d+) column (?P<col>\d+)'
+    regex = r'^(?P<message>.+):\s*line (?P<line>\d+) column (?P<col>\d+)'
 
     def run(self, cmd, code):
         try:
