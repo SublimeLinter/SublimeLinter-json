@@ -20,7 +20,7 @@ class JSON(Linter):
 
     """Provides an interface to json.loads()."""
 
-    language = 'json'
+    syntax = 'json'
     cmd = None
     regex = r'^(?P<message>.+):\s*line (?P<line>\d+) column (?P<col>\d+)'
 
