@@ -1,6 +1,5 @@
 SublimeLinter-json
 -------------------------------
-
 This linter plugin for SublimeLinter provides an interface to json.
 
 For more information, please see https://github.com/SublimeLinter/SublimeLinter-json.
