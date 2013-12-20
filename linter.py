@@ -14,8 +14,6 @@ import json
 import os.path
 import re
 
-import sublime
-
 from SublimeLinter.lint import Linter
 
 
@@ -31,8 +29,9 @@ class JSON(Linter):
         """Attempt to parse code as JSON, return '' if it succeeds, the error message if it fails."""
 
         # Ignore comments in .sublime-settings files.
-        if os.path.splitext(sublime.active_window().active_view().file_name())[1] == ".sublime-settings":
-            code = re.sub(r'\s*/[/*].*', '', code)
+        if os.path.splitext(self.filename)[1] == '.sublime-settings':
+            code = re.sub(r'\s*//.*', '', code)  # Line comments.
+            code = re.sub(r'\s*/\*.*\*/', '', code, flags=re.DOTALL)  # Block comments.
 
         try:
             json.loads(code)
