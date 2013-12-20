@@ -31,7 +31,7 @@ class JSON(Linter):
         # Ignore comments in .sublime-settings files.
         if os.path.splitext(self.filename)[1] == '.sublime-settings':
             code = re.sub(r'\s*//.*', '', code)  # Line comments.
-            code = re.sub(r'\s*/\*.*\*/', '', code, flags=re.DOTALL)  # Block comments.
+            code = re.sub(r'\s*/\*.*?\*/', '', code, flags=re.DOTALL)  # Block comments.
 
         try:
             json.loads(code)
