@@ -25,13 +25,16 @@ class JSON(Linter):
     cmd = None
     regex = r'^(?P<message>.+):\s*line (?P<line>\d+) column (?P<col>\d+)'
 
+    line_comment_regex = re.compile(r'\s*//.*')
+    block_comment_regex = re.compile(r'\s*/\*.*?\*/', flags=re.DOTALL)
+
     def run(self, cmd, code):
         """Attempt to parse code as JSON, return '' if it succeeds, the error message if it fails."""
 
         # Ignore comments in .sublime-settings files.
         if os.path.splitext(self.filename)[1] == '.sublime-settings':
-            code = re.sub(r'\s*//.*', '', code)  # Line comments.
-            code = re.sub(r'\s*/\*.*?\*/', '', code, flags=re.DOTALL)  # Block comments.
+            code = self.line_comment_regex.sub('', code)
+            code = self.block_comment_regex.sub('', code)
 
         try:
             json.loads(code)
