@@ -11,7 +11,9 @@
 """This module exports the JSON plugin linter class."""
 
 import json
+import os.path
 import re
+
 from SublimeLinter.lint import Linter
 
 
@@ -34,9 +36,13 @@ class JSON(Linter):
 
     def run(self, cmd, code):
         """Attempt to parse code as JSON, return '' if it succeeds, the error message if it fails."""
-        try:
+
+        # Ignore comments in .sublime-settings files.
+        if os.path.splitext(self.filename)[1] == '.sublime-settings':
             code = self.line_comment_re.sub('', code)
             code = self.block_comment_re.sub(self.strip_comment, code)
+
+        try:
             json.loads(code)
             return ''
         except ValueError as err:
