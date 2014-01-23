@@ -31,6 +31,7 @@ class JSON(Linter):
 
     @classmethod
     def strip_comment(cls, match):
+        """Return a block comment stripped of all content on each line, but leaving the EOL."""
         inner = cls.inner_re.sub(r'\2', match.group(1))
         return inner
 
