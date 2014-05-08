@@ -25,8 +25,8 @@ class JSON(Linter):
     cmd = None
     regex = r'^(?P<message>.+):\s*line (?P<line>\d+) column (?P<col>\d+)'
 
-    line_comment_re = re.compile(r'[ \t]*//.*')
-    block_comment_re = re.compile(r'/\*(.*?)\*/', re.DOTALL)
+    line_comment_re = re.compile(r'^\s*[ \t]*//.*', re.MULTILINE)
+    block_comment_re = re.compile(r'^\s*/\*(.*?)\*/', re.MULTILINE | re.DOTALL)
     inner_re = re.compile(r'^([^\r\n]*?(\r?\n|$))', re.MULTILINE)
     extensions = [
         '.sublime-build',
@@ -49,12 +49,14 @@ class JSON(Linter):
     def run(self, cmd, code):
         """Attempt to parse code as JSON, return '' if it succeeds, the error message if it fails."""
 
-        # Ignore comments in .sublime-* files.
+        # Ignore comments in .sublime-* files. Note that comments are not supported
+        # at the end of a line.
         if os.path.splitext(self.filename)[1] in self.extensions:
             code = self.line_comment_re.sub('', code)
             code = self.block_comment_re.sub(self.strip_comment, code)
 
         try:
+            print(code)
             json.loads(code)
             return ''
         except ValueError as err:

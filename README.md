@@ -5,6 +5,8 @@ SublimeLinter-json
 
 This linter plugin for [SublimeLinter](http://sublimelinter.readthedocs.org) provides an interface to the [JSON parser](http://docs.python.org/3/library/json.html?highlight=json.loads#json.loads) built into Sublime Text. It will be used with files that have the “JSON” syntax.
 
+To facilitate editing Sublime Text settings files, which may contain comments, this linter allows line comments (//) and multiline block comments (/* */), but they may not appear at the end of a line (after JSON data).
+
 ## Installation
 SublimeLinter 3 must be installed in order to use this plugin. If SublimeLinter 3 is not installed, please follow the instructions [here](http://sublimelinter.readthedocs.org/en/latest/installation.html).
 
