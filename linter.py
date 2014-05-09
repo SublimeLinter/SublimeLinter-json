@@ -13,6 +13,7 @@
 import json
 import os.path
 import re
+import sublime
 
 from SublimeLinter.lint import Linter
 
@@ -23,41 +24,41 @@ class JSON(Linter):
 
     syntax = 'json'
     cmd = None
-    regex = r'^(?P<message>.+):\s*line (?P<line>\d+) column (?P<col>\d+)'
+    loose_regex = re.compile(r'^.+: (?P<message>.+) in \(data\):(?P<line>\d+):(?P<col>\d+)')
+    strict_regex = re.compile(r'^(?P<message>.+):\s*line (?P<line>\d+) column (?P<col>\d+)')
+    regex = loose_regex
+    defaults = {
+        'strict': True
+    }
 
-    line_comment_re = re.compile(r'^\s*[ \t]*//.*', re.MULTILINE)
-    block_comment_re = re.compile(r'^\s*/\*(.*?)\*/', re.MULTILINE | re.DOTALL)
-    inner_re = re.compile(r'^([^\r\n]*?(\r?\n|$))', re.MULTILINE)
     extensions = [
         '.sublime-build',
         '.sublime-commands',
         '.sublime-completions',
         '.sublime-keymap',
         '.sublime-menu',
+        '.sublime_metrics',
         '.sublime-mousemap',
         '.sublime-project',
+        '.sublime_session',
         '.sublime-settings',
         '.sublime-workspace',
     ]
 
-    @classmethod
-    def strip_comment(cls, match):
-        """Return a block comment stripped of all content on each line, but leaving the EOL."""
-        inner = cls.inner_re.sub(r'\2', match.group(1))
-        return inner
-
     def run(self, cmd, code):
         """Attempt to parse code as JSON, return '' if it succeeds, the error message if it fails."""
 
-        # Ignore comments in .sublime-* files. Note that comments are not supported
-        # at the end of a line.
-        if os.path.splitext(self.filename)[1] in self.extensions:
-            code = self.line_comment_re.sub('', code)
-            code = self.block_comment_re.sub(self.strip_comment, code)
+        # Use ST's loose parser for its setting files.
+        strict = os.path.splitext(self.filename)[1] not in self.extensions
 
         try:
-            print(code)
-            json.loads(code)
+            if strict:
+                self.__class__.regex = self.strict_regex
+                json.loads(code)
+            else:
+                self.__class__.regex = self.loose_regex
+                sublime.decode_value(code)
+
             return ''
         except ValueError as err:
             return str(err)
