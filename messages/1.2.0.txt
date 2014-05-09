@@ -1,0 +1,8 @@
+SublimeLinter-json 1.2.0
+-------------------------
+
+The linter now uses Sublime Text's built in parser
+when linting Sublime Text JSON settings files.
+This allows you to use end of line comments and
+dangling commas (since Sublime Text allows those)
+in those files without linter errors.
