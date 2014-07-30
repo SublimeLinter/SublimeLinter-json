@@ -42,6 +42,7 @@ class JSON(Linter):
         '.sublime-project',
         '.sublime_session',
         '.sublime-settings',
+        '.sublime-theme',
         '.sublime-workspace',
     ]
 
