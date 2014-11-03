@@ -1,0 +1,38 @@
+[
+    {
+        "mnemonic": "n",
+        "caption": "Preferences",
+        "id": "preferences",
+        "children": [
+            {
+                "mnemonic": "P",
+                "caption": "Package Settings",
+                "id": "package-settings",
+                "children": [
+                    {
+                        "caption": "SublimeLinter-json",
+                        "children": [
+                            {
+                                "caption": "Settings – Default",
+                                "args": {
+                                    "file": "${packages}/SublimeLinter-json/SublimeLinter-json.sublime-settings"
+                                },
+                                "command": "open_file"
+                            },
+                            {
+                                "caption": "Settings – User",
+                                "args": {
+                                    "file": "${packages}/User/SublimeLinter-json.sublime-settings"
+                                },
+                                "command": "open_file"
+                            },
+                            {
+                                "caption": "-"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

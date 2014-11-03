@@ -21,6 +21,14 @@ To install via Package Control, do the following:
 ## Settings
 For general information on how SublimeLinter works with settings, please see [Settings](http://sublimelinter.readthedocs.org/en/latest/settings.html). For information on generic linter settings, please see [Linter Settings](http://sublimelinter.readthedocs.org/en/latest/linter_settings.html).
 
+Settings are accessed via the <kbd>Preferences</kbd> > <kbd>Package Settings</kbd> > <kbd>SublimeLinter-json</kbd> menu.
+
+### strict
+If strict is set to true (default), linter will work in strict mode in which comments are not allowed. Otherwise, it will use a "soft" check which allows comments.
+
+### strict_exceptions
+A list of file extensions which are always checked in a non-strict manner. By default this includes .sublime-* extensions which often include comments.
+
 ## Contributing
 If you would like to contribute enhancements or fixes, please do the following:
 
