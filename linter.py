@@ -27,30 +27,17 @@ class JSON(Linter):
     loose_regex = re.compile(r'^.+: (?P<message>.+) in \(data\):(?P<line>\d+):(?P<col>\d+)')
     strict_regex = re.compile(r'^(?P<message>.+):\s*line (?P<line>\d+) column (?P<col>\d+)')
     regex = loose_regex
-    defaults = {
-        'strict': True
-    }
 
-    extensions = [
-        '.sublime-build',
-        '.sublime-commands',
-        '.sublime-completions',
-        '.sublime-keymap',
-        '.sublime-menu',
-        '.sublime_metrics',
-        '.sublime-mousemap',
-        '.sublime-project',
-        '.sublime_session',
-        '.sublime-settings',
-        '.sublime-theme',
-        '.sublime-workspace',
-    ]
+    s = sublime.load_settings("SublimeLinter-json.sublime-settings")
 
     def run(self, cmd, code):
         """Attempt to parse code as JSON, return '' if it succeeds, the error message if it fails."""
 
-        # Use ST's loose parser for its setting files.
-        strict = os.path.splitext(self.filename)[1] not in self.extensions
+        strict = self.s.get('strict')
+        if strict:
+            exceptions = self.s.get('strict_exceptions')
+            ext = os.path.splitext(self.filename)[1]
+            strict = ext not in exceptions
 
         try:
             if strict:
