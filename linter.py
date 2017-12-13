@@ -33,6 +33,7 @@ class JSON(Linter):
 
     extensions = [
         '.sublime-build',
+        '.sublime-color-scheme',
         '.sublime-commands',
         '.sublime-completions',
         '.sublime-keymap',
