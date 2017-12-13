@@ -49,12 +49,11 @@ class JSON(Linter):
 
     def run(self, cmd, code):
         """
-            Attempt to parse code as JSON
-            Returns '' if it succeeds, the error message if it fails.
+        Attempt to parse code as JSON.
 
-            Use ST's loose parser for its setting files, or when specified.
+        Returns '' if it succeeds, the error message if it fails.
+        Use ST's loose parser for its setting files, or when specified.
         """
-
         is_sublime_file = os.path.splitext(self.filename)[1] in self.extensions
 
         if Linter.get_view_settings(self).get('strict') and not is_sublime_file:
