@@ -1,5 +1,0 @@
-SublimeLinter-json 1.3.0
--------------------------
-
-Now accepts a "strict" setting, which if false uses Sublime Text's "loose"
-parser so that trailing comma's and comments are accepted.
