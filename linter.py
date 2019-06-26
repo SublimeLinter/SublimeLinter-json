@@ -25,7 +25,7 @@ class JSON(Linter):
         """
         is_sublime_file = os.path.splitext(self.filename)[1].startswith('.sublime-')
 
-        if self.get_view_settings().get('strict') and not is_sublime_file:
+        if self.settings.get('strict') and not is_sublime_file:
             strict = True
         else:
             strict = False
