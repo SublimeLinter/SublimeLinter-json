@@ -62,9 +62,20 @@ class TestConstants(unittest.TestCase):
     def test_multibyte_character_before_constant(self):
         self.assertError('["😀", NaN]', 0, 6, 'NaN is not valid JSON')
 
+    def test_unknown_location_marks_the_file_not_a_fake_column(self):
+        # Simulate a locator miss after the JSON decoder has rejected NaN.
+        with mock.patch.object(LinterModule, 'NON_JSON_CONSTANT_RE') as scanner:
+            scanner.finditer.return_value = ()
+            output, errors = self.lint('{"n": NaN}')
+
+        self.assertEqual(output, 'NaN is not valid JSON: line 1')
+        self.assertEqual(len(errors), 1)
+        self.assertEqual((errors[0]['line'], errors[0]['col']), (0, None))
+
     def test_ordinary_syntax_errors_are_unchanged(self):
         output, errors = self.lint('{"a": }')
         self.assertTrue(errors)
+        self.assertEqual((errors[0]['line'], errors[0]['col']), (0, 6))
         self.assertIn('Expecting value', errors[0]['message'])
 
     def test_loose_mode_is_unchanged(self):

@@ -30,13 +30,14 @@ def describe_non_json_constant(code, name):
             col = start - (code.rfind('\n', 0, start) + 1) + 1
             return '{} is not valid JSON: line {} column {}'.format(name, line, col)
 
-    return '{} is not valid JSON: line 1 column 1'.format(name)
+    # A locator miss has no trustworthy column; report it against the file.
+    return '{} is not valid JSON: line 1'.format(name)
 
 
 class JSON(Linter):
     cmd = None
     loose_regex = re.compile(r'^.+: (?P<message>.+) in \(data\):(?P<line>\d+):(?P<col>\d+)')
-    strict_regex = re.compile(r'^(?P<message>.+):\s*line (?P<line>\d+) column (?P<col>\d+)')
+    strict_regex = re.compile(r'^(?P<message>.+):\s*line (?P<line>\d+)(?: column (?P<col>\d+)|$)')
     regex = loose_regex
     defaults = {
         'selector': 'source.json',
