@@ -28,5 +28,18 @@ This linter accepts a `"strict"` setting, which if false uses Sublime Text's "lo
 }
 ```
 
+In strict mode the linter also reports objects that repeat a key (`{"a": 1, "a": 2}`), at the second occurrence. This is on by default and can be turned off with `"check_duplicate_keys"`, for example for very large files (the check makes parsing somewhat slower) or for files that use repeated keys on purpose, such as in place of comments.
+Like every linter setting it can be set globally in the SublimeLinter settings, or per project in the `SublimeLinter` section of the project file:
+
+```json
+"linters": {
+	"json": {
+		"check_duplicate_keys": false
+	}
+}
+```
+
+The check is not done when `"strict"` is false.
+
 - SublimeLinter settings: http://sublimelinter.com/en/latest/settings.html
 - Linter settings: http://sublimelinter.com/en/latest/linter_settings.html
