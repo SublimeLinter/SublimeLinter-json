@@ -41,6 +41,9 @@ class TestDuplicateKeys(unittest.TestCase):
     def test_escaped_spelling_of_the_same_key(self):
         self.assertDuplicate('{"a": 1, "\\u0061": 2}', 0, 9, 'u0061')
 
+    def test_escaped_quote_in_duplicate_key(self):
+        self.assertDuplicate(r'{"a\"b": 1, "a\"b": 2}', 0, 12, r'"a\"b"')
+
     def test_key_appearing_in_a_string_value_is_not_a_duplicate(self):
         self.assertClean('{"k": "a", "l": "a", "a": 1}')
 
@@ -53,6 +56,16 @@ class TestDuplicateKeys(unittest.TestCase):
     def test_valid_documents_still_pass(self):
         for code in ('{}', '[]', '{"a": 1, "b": [1, 2, {"c": null}]}'):
             self.assertClean(code)
+
+    def test_unknown_location_marks_the_file_not_a_fake_column(self):
+        # Simulate a locator miss after the decoder has rejected a duplicate.
+        with mock.patch.object(LinterModule, 'TOKEN_RE') as scanner:
+            scanner.finditer.return_value = ()
+            output, errors = self.lint('{"a": 1, "a": 2}')
+
+        self.assertEqual(output, 'Duplicate key: line 1')
+        self.assertEqual(len(errors), 1)
+        self.assertEqual((errors[0]['line'], errors[0]['col']), (0, None))
 
     def test_ordinary_syntax_errors_are_unchanged(self):
         output, errors = self.lint('{"a": }')

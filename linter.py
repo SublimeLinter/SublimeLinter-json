@@ -82,7 +82,8 @@ def describe_duplicate_key(code):
             stack[-1].add(key)
             expect_key = False
 
-    return 'Duplicate key: line 1 column 1'
+    # A locator miss has no trustworthy column; report it against the file.
+    return 'Duplicate key: line 1'
 
 
 class JSON(Linter):
