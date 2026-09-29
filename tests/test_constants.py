@@ -44,6 +44,24 @@ class TestConstants(unittest.TestCase):
     def test_constant_names_inside_strings_are_ignored_when_locating(self):
         self.assertError('["NaN", "-Infinity", NaN]', 0, 21, 'NaN')
 
+    def test_escaped_quotes_and_backslashes_in_strings(self):
+        self.assertError(
+            r'["quote: \"-Infinity\" and NaN", -Infinity]',
+            0, 33, '-Infinity is not valid JSON',
+        )
+        self.assertError(
+            r'["slash: \\ -Infinity", -Infinity]',
+            0, 24, '-Infinity is not valid JSON',
+        )
+
+    def test_first_actual_constant_when_several_appear(self):
+        self.assertError('["NaN", NaN, NaN]', 0, 8, 'NaN is not valid JSON')
+        self.assertError('["Infinity", NaN, Infinity]', 0, 13, 'NaN is not valid JSON')
+        self.assertError('["NaN", -Infinity, Infinity]', 0, 8, '-Infinity is not valid JSON')
+
+    def test_multibyte_character_before_constant(self):
+        self.assertError('["😀", NaN]', 0, 6, 'NaN is not valid JSON')
+
     def test_ordinary_syntax_errors_are_unchanged(self):
         output, errors = self.lint('{"a": }')
         self.assertTrue(errors)
