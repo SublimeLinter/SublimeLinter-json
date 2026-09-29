@@ -10,10 +10,10 @@ Linter = LinterModule.JSON
 
 
 class TestDuplicateKeys(unittest.TestCase):
-    def lint(self, code, strict=True, filename='data.json'):
+    def lint(self, code, strict=True, filename='data.json', check_duplicate_keys=True):
         # `filename` is a read-only property, and the view is a stand-in
         with mock.patch.object(Linter, 'filename', new_callable=mock.PropertyMock, return_value=filename):
-            linter = Linter(sublime.View(0), {'strict': strict})
+            linter = Linter(sublime.View(0), {'strict': strict, 'check_duplicate_keys': check_duplicate_keys})
             output = linter.run(None, code)
             return output, list(linter.find_errors(output))
 
@@ -66,6 +66,25 @@ class TestDuplicateKeys(unittest.TestCase):
         self.assertEqual(output, 'Duplicate key: line 1')
         self.assertEqual(len(errors), 1)
         self.assertEqual((errors[0]['line'], errors[0]['col']), (0, None))
+
+    def test_check_can_be_turned_off_with_the_setting(self):
+        output, errors = self.lint('{"a": 1, "a": 2}', check_duplicate_keys=False)
+
+        self.assertEqual(output, '')
+        self.assertFalse(errors)
+
+    def test_setting_off_still_reports_other_errors(self):
+        output, errors = self.lint('{"a": 1, "a": NaN}', check_duplicate_keys=False)
+
+        self.assertIn('NaN is not valid JSON', output)
+
+    def test_check_is_on_by_default(self):
+        self.assertTrue(Linter.defaults['check_duplicate_keys'])
+
+        # ...also when the setting is missing altogether
+        with mock.patch.object(Linter, 'filename', new_callable=mock.PropertyMock, return_value='data.json'):
+            linter = Linter(sublime.View(0), {'strict': True})
+            self.assertIn('Duplicate key', linter.run(None, '{"a": 1, "a": 2}'))
 
     def test_ordinary_syntax_errors_are_unchanged(self):
         output, errors = self.lint('{"a": }')

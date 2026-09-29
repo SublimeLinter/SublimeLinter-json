@@ -93,7 +93,8 @@ class JSON(Linter):
     regex = loose_regex
     defaults = {
         'selector': 'source.json',
-        'strict': True
+        'strict': True,
+        'check_duplicate_keys': True
     }
 
     def run(self, cmd, code):
@@ -102,6 +103,9 @@ class JSON(Linter):
 
         Returns '' if it succeeds, the error message if it fails.
         Use ST's loose parser for its setting files, or when specified.
+        Duplicate keys are only checked in strict mode, and can be turned off with
+        the `check_duplicate_keys` setting (it costs time on very large files, and
+        some files use repeated keys on purpose).
         """
         is_sublime_file = os.path.splitext(self.filename)[1].startswith('.sublime-')
 
@@ -113,7 +117,8 @@ class JSON(Linter):
         try:
             if strict:
                 self.regex = self.strict_regex
-                json.loads(code, parse_constant=reject_constant, object_pairs_hook=reject_duplicate_keys)
+                pairs_hook = reject_duplicate_keys if self.settings.get('check_duplicate_keys', True) else None
+                json.loads(code, parse_constant=reject_constant, object_pairs_hook=pairs_hook)
             else:
                 self.regex = self.loose_regex
                 sublime.decode_value(code)
